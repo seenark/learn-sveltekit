@@ -1,22 +1,35 @@
 <script lang="ts">
   import Search from "$lib/icon/Search.svelte";
+  import { createEventDispatcher } from "svelte";
+
+  let searchTerms: string = "";
+
+  const dispatch = createEventDispatcher();
+
+  const handleSubmit = () => {
+    dispatch("search", { searchTerms });
+  };
 </script>
 
-<div class="relative flex w-full items-baseline">
+<form on:submit|preventDefault={handleSubmit} class="relative flex w-full items-baseline">
   <div class="mr-2 text-pastelPurple mt-auto">
     <Search />
   </div>
   <input
-    type="text"
+    type="search"
     name="search"
     placeholder="Search by keyword"
     class="search w-full pr-[80px] md:pr-0 md:w-[14rem] lg:w-72 border-b-2 border-dashed border-b-pastelPurple bg-transparent font-sansSerif text-base lg:text-xl text-black outline-none focus:border-b-larvenderIndigo focus:border-solid"
+    bind:value={searchTerms}
+    on:search={() => {
+      dispatch("clear", { searchTerms });
+    }}
   />
   <button
     class="absolute pointer-events-none transition-transform transform duration-300 left-8 font-sansSerif text-lg lg:text-xl font-black text-pastelPurple"
     >Search</button
   >
-</div>
+</form>
 
 <style lang="postcss">
   ::placeholder {

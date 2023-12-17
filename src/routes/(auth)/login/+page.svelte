@@ -1,13 +1,25 @@
 <script lang="ts">
+  export let data;
+  let { supabase } = data;
+  $: ({ supabase } = data);
   import Alert from "$lib/components/Alert.svelte";
   let email: string,
     password: string,
     alertMessage = "";
+
+  const handleSubmit = async () => {
+    console.log(email, password);
+    const { data, error } = await supabase.auth.signInWithPassword({
+      email: email,
+      password: password,
+    });
+    console.log("data", data);
+  };
 </script>
 
 <h1 class="mb-4 text-[2.5rem] font-black text-goldenFizz">Login</h1>
 
-<form>
+<form on:submit={handleSubmit}>
   <Alert message={alertMessage} />
   <div class="field">
     <label for="email" class="text-goldenFizz">Email Address</label>

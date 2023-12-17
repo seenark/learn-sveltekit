@@ -11,13 +11,33 @@
   import Button from "$lib/components/Button.svelte";
   import SlidePanel from "$lib/components/SlidePanel.svelte";
   import InvoiceForm from "$lib/components/InvoiceForm.svelte";
+  import type { Invoice } from "../../../global";
+  import NoSearchResults from "./NoSearchResults.svelte";
 
+  let invoiceList: Invoice[] = [];
   let isInvoiceFormShowing = false;
 
   onMount(() => {
     loadInvoices();
     console.log($invoices);
   });
+
+  const searchInvoices = (event: CustomEvent<{ searchTerms: string }>) => {
+    const keywords = event.detail.searchTerms;
+    invoiceList = $invoices.filter((invoice) => {
+      return (
+        invoice?.client?.name?.toLowerCase().includes(keywords.toLowerCase()) ||
+        invoice?.invoiceNumber?.toLowerCase().includes(keywords.toLowerCase()) ||
+        invoice?.subject?.toLowerCase().includes(keywords.toLowerCase())
+      );
+    });
+  };
+
+  const clearSearch = (event: CustomEvent<{ searchTerms: string }>) => {
+    if (event.detail.searchTerms === "") {
+      invoiceList = $invoices;
+    }
+  };
 </script>
 
 <svelte:head>
@@ -29,7 +49,7 @@
 >
   <!-- search fields -->
   {#if $invoices.length > 0}
-    <Search />
+    <Search on:search={searchInvoices} />
   {:else}
     <div />
   {/if}
@@ -55,6 +75,8 @@
     Loading...
   {:else if $invoices.length === 0}
     <BlankState />
+  {:else if invoiceList.length <= 0}
+    <NoSearchResults />
   {:else}
     <InvoiceRowHeader class="text-daisyBush" />
     <div class="flex flex-col-reverse">
@@ -62,7 +84,7 @@
         <InvoiceRow {invoice} />
       {/each}
     </div>
-    <CircledAmount label="Total" amount={`$${centsToDollars(sumInvoices($invoices))}`} />
+    <CircledAmount label="Total" amount={`$${centsToDollars(sumInvoices(invoiceList))}`} />
   {/if}
 </div>
 

@@ -65,26 +65,19 @@
     invoice.discount = event.detail;
   }
 
-  function handleSubmit() {
+  async function handleSubmit() {
     console.log({ invoice, newClient });
     addInvoice(invoice);
     if (isNewClient) {
       invoice.client = newClient;
-      addClient(newClient);
+      const addedClient = await addClient(newClient);
+      invoice.client.id = addedClient?.id || "";
     }
 
     if (formState === "create") {
-      addInvoice(invoice);
-      snackbar.send({
-        message: "Your invoice was successfully created.",
-        type: "success",
-      });
+      await addInvoice(invoice);
     } else {
       updateInvoice(invoice);
-      snackbar.send({
-        message: "Your invoice was successfully updated.",
-        type: "success",
-      });
     }
 
     dispatcher("closeForm");

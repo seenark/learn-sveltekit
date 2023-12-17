@@ -6,6 +6,8 @@
   import LineItemRows from "../LineItemRows.svelte";
   import SvelteMarkdown from "svelte-markdown";
   import { page } from "$app/stores";
+  import { invoices } from "$lib/stores/invoiceStore";
+  import { clients } from "$lib/stores/clientStorte";
 
   export let data;
   console.log(data);
@@ -85,11 +87,21 @@
   <div class="col-span-6 sm:col-span-3 print:col-span-3">
     <div class="label">Bill to</div>
     <p>
-      <strong>{data.invoice?.client.name}</strong><br />
-      {data.invoice?.client.email}<br />
-      {data.invoice?.client.street}<br />
-      {data.invoice?.client.city}, {data.invoice?.client.state}
-      {data.invoice?.client.zip}
+      {#if data.invoice.client.name}
+        <strong>{data.invoice?.client.name}</strong><br />
+      {/if}
+      {#if data.invoice.client.email}
+        {data.invoice?.client.email}<br />
+      {/if}
+      {#if data.invoice.client.street}
+        {data.invoice?.client.street}<br />
+      {/if}
+      {#if data.invoice.client.city}
+        {data.invoice?.client.city}, {data.invoice?.client.state}
+      {/if}
+      {#if data.invoice.client.zip}
+        {data.invoice?.client.zip}
+      {/if}
     </p>
   </div>
 

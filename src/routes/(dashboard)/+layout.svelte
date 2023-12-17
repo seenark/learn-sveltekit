@@ -1,4 +1,5 @@
 <script lang="ts">
+  import Authenticated from "$lib/components/Authenticated.svelte";
   import Navbar from "$lib/components/Navbar.svelte";
   import Snackbar from "$lib/components/Snackbar.svelte";
 </script>
